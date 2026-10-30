@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "ThaiDoc – ทำใบเสนอราคา ใบแจ้งหนี้",
+  "short_name": "ThaiDoc",
+  "description": "ทำใบเสนอราคาและใบแจ้งหนี้ภาษาไทย คิด VAT 7% ตัวหนังสือบาทไทย ใช้ได้แม้ไม่มีเน็ต",
+  "lang": "th",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f9",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

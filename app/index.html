@@ -57,6 +57,13 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
 #paper .wm{margin-top:24px;text-align:center;font-size:11px;color:#888}
 [hidden]{display:none !important}
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ThaiDoc">
 </head>
 <body>
 <div class="wrap">
@@ -144,8 +151,17 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
     return out;
   }
 
+  // Whole satang, rounded half up. Binary floating point makes 2.055 * 100 = 205.49999999999997, so a plain
+  // Math.round gives 2.05; toPrecision(14) drops that noise (like a spreadsheet) so 68.50 x 3% = 2.06.
+  function toSatang(x) {
+    const n = +x;
+    if (!isFinite(n)) return NaN;
+    const sign = n < 0 ? -1 : 1;
+    return (sign * Math.round(+(Math.abs(n) * 100).toPrecision(14))) || 0;
+  }
+
   function bahtText(amount) {
-    const v = Math.round((+amount + Number.EPSILON) * 100);
+    const v = toSatang(amount);
     if (!isFinite(v) || v < 0) return '';
     if (v === 0) return 'ศูนย์บาทถ้วน';
     const baht = Math.floor(v / 100);
@@ -179,7 +195,7 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
   }
 
   function bahtTextEn(amount) {
-    const v = Math.round((+amount + Number.EPSILON) * 100);
+    const v = toSatang(amount);
     if (!isFinite(v) || v < 0) return '';
     if (v === 0) return 'Zero baht only';
     const baht = Math.floor(v / 100);
@@ -217,7 +233,7 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
     return p + crc16(p);
   }
 
-  function round2(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
+  function round2(x) { return toSatang(x) / 100; }
 
   function totals(items, o) {
     const sub = round2(items.reduce((s, i) => s + (+i.qty || 0) * (+i.price || 0), 0));
@@ -422,6 +438,26 @@ if (LITE) {
   document.title = document.title.replace('ThaiDoc', 'ThaiDoc Lite');
 }
 applyUI(); fresh();
+</script>
+<style>
+#pwaInstall{position:fixed;left:12px;bottom:12px;z-index:50;display:none;background:#0f766e;color:#fff;border:0;border-radius:999px;padding:10px 16px;font:600 14px Sarabun,system-ui,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer}
+@media print{#pwaInstall{display:none!important}}
+</style>
+<button id="pwaInstall" type="button">ติดตั้งแอป</button>
+<script>
+(function () {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+  var ev, btn = document.getElementById('pwaInstall');
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); ev = e; btn.style.display = 'block'; });
+  btn.addEventListener('click', function () {
+    if (!ev) return;
+    ev.prompt();
+    ev.userChoice.then(function () { ev = null; btn.style.display = 'none'; });
+  });
+  window.addEventListener('appinstalled', function () { btn.style.display = 'none'; });
+})();
 </script>
 </body>
 </html>

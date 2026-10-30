@@ -24,8 +24,17 @@
     return out;
   }
 
+  // Whole satang, rounded half up. Binary floating point makes 2.055 * 100 = 205.49999999999997, so a plain
+  // Math.round gives 2.05; toPrecision(14) drops that noise (like a spreadsheet) so 68.50 x 3% = 2.06.
+  function toSatang(x) {
+    const n = +x;
+    if (!isFinite(n)) return NaN;
+    const sign = n < 0 ? -1 : 1;
+    return (sign * Math.round(+(Math.abs(n) * 100).toPrecision(14))) || 0;
+  }
+
   function bahtText(amount) {
-    const v = Math.round((+amount + Number.EPSILON) * 100);
+    const v = toSatang(amount);
     if (!isFinite(v) || v < 0) return '';
     if (v === 0) return 'ศูนย์บาทถ้วน';
     const baht = Math.floor(v / 100);
@@ -59,7 +68,7 @@
   }
 
   function bahtTextEn(amount) {
-    const v = Math.round((+amount + Number.EPSILON) * 100);
+    const v = toSatang(amount);
     if (!isFinite(v) || v < 0) return '';
     if (v === 0) return 'Zero baht only';
     const baht = Math.floor(v / 100);
@@ -97,7 +106,7 @@
     return p + crc16(p);
   }
 
-  function round2(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
+  function round2(x) { return toSatang(x) / 100; }
 
   function totals(items, o) {
     const sub = round2(items.reduce((s, i) => s + (+i.qty || 0) * (+i.price || 0), 0));
