@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thaidoc.github.io/sitemap.xml

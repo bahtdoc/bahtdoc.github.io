@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ThaiDoc - ใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ / Thai Invoice Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1c2430;--mute:#667085;--line:#e2e5ea;--brand:#0f766e;--brand-ink:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12161c;--card:#1b212a;--ink:#e8ecf1;--mute:#98a2b3;--line:#2c3541;--brand:#2dd4bf;--brand-ink:#052e2b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sarabun',system-ui,sans-serif;font-size:15px}
+.wrap{display:grid;grid-template-columns:minmax(320px,440px) 1fr;gap:20px;padding:16px;max-width:1400px;margin:0 auto}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:13px;color:var(--mute);margin:16px 0 8px;letter-spacing:.02em}
+label{display:block;font-size:13px;color:var(--mute);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:56px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.items .it{display:grid;grid-template-columns:1fr 60px 90px 30px;gap:6px;margin-bottom:6px}
+button{font:inherit;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.saved{margin-top:10px;font-size:13px}
+.saved a{cursor:pointer;color:var(--brand);margin-right:10px}
+.paperbox{overflow-x:auto;min-width:0}
+/* paper */
+#paper{background:#fff;color:#111;width:210mm;min-height:297mm;padding:16mm;margin:0 auto;box-shadow:0 2px 14px rgba(0,0,0,.18);font-size:13px;line-height:1.5}
+#paper .top{display:flex;justify-content:space-between;gap:16px}
+#paper .title{font-size:24px;font-weight:700;text-align:right;color:#0f766e;line-height:1.2}
+#paper .title small{display:block;font-size:15px;font-weight:600}
+#paper small{color:#555;font-weight:400}
+#paper th small{color:#d7f3ef}
+#paper table{width:100%;border-collapse:collapse;margin-top:14px}
+#paper th{background:#0f766e;color:#fff;padding:6px 8px;text-align:left;line-height:1.25}
+#paper td{padding:6px 8px;border-bottom:1px solid #ddd;vertical-align:top}
+#paper .r{text-align:right}
+#paper .sum{margin-left:auto;width:60%;margin-top:10px}
+#paper .sum div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+#paper .sum .g{font-weight:700;font-size:15px;border-top:2px solid #111;margin-top:4px;padding-top:4px}
+#paper .words{margin-top:10px;padding:8px;background:#f1f5f4;border-radius:6px;font-weight:600}
+#paper .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px;gap:20px}
+#paper .sign{text-align:center;width:200px;margin-top:50px;border-top:1px solid #111;padding-top:4px}
+#paper pre{white-space:pre-wrap;font:inherit;margin:2px 0}
+@media print{
+  body{background:#fff}.wrap{display:block;padding:0}.panel.form{display:none}.paperbox{overflow:visible}
+  #paper{box-shadow:none;margin:0;width:auto;min-height:auto;padding:0}
+  @page{size:A4;margin:14mm}
+}
+.hint{font-size:12px;color:var(--mute)}
+.lite{background:#fef3c7;color:#78350f;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:6px}
+.lite a{display:inline-block;margin-top:6px;background:#0f766e;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-weight:600}
+#paper .wm{margin-top:24px;text-align:center;font-size:11px;color:#888}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel form">
+    <h1 data-t="appTitle"></h1>
+    <div id="liteBox" class="lite" hidden><span data-t="liteBanner"></span><br><a id="upgrade" target="_blank" rel="noopener" data-t="upgrade"></a></div>
+    <label data-t="lang"></label>
+    <select id="lang">
+      <option value="th">ไทย</option>
+      <option value="en">English</option>
+      <option value="both">ไทย + English</option>
+    </select>
+    <label data-t="type"></label>
+    <select id="type">
+      <option value="QT"></option><option value="INV"></option><option value="TAX" data-full></option><option value="RC" data-full></option>
+    </select>
+    <div class="row">
+      <div><label data-t="no"></label><input id="no"></div>
+      <div><label data-t="date"></label><input id="date" type="date"></div>
+    </div>
+
+    <h2 data-t="seller"></h2>
+    <label data-t="sName"></label><input id="sName">
+    <label data-t="addr"></label><textarea id="sAddr"></textarea>
+    <div class="row">
+      <div><label data-t="taxid"></label><input id="sTax"></div>
+      <div><label data-t="tel"></label><input id="sTel"></div>
+    </div>
+    <div data-full><label data-t="pp"></label><input id="pp" inputmode="numeric"></div>
+
+    <h2 data-t="customer"></h2>
+    <label data-t="bName"></label><input id="bName">
+    <label data-t="addr"></label><textarea id="bAddr"></textarea>
+    <label data-t="taxid"></label><input id="bTax">
+
+    <h2 data-t="items"></h2>
+    <div class="items" id="items"></div>
+    <button id="addItem" type="button" data-t="addItem"></button>
+
+    <h2 data-t="taxes"></h2>
+    <div class="row">
+      <div><label>VAT 7%</label>
+        <select id="vatMode"><option value="none" data-t="vatNone"></option><option value="exclude" data-t="vatEx"></option><option value="include" data-t="vatIn"></option></select></div>
+      <div data-full><label data-t="whtLabel"></label>
+        <select id="whtRate"><option value="0" data-t="whtNone"></option><option value="1">1%</option><option value="2">2%</option><option value="3">3%</option><option value="5">5%</option></select></div>
+    </div>
+    <label data-t="discount"></label><input id="discount" type="number" min="0" step="0.01" value="0">
+    <label data-t="noteLabel"></label><textarea id="note"></textarea>
+
+    <div class="actions">
+      <button class="primary" id="print" type="button" data-t="print"></button>
+      <button id="save" type="button" data-t="save" data-full></button>
+      <button id="newDoc" type="button" data-t="newDoc"></button>
+    </div>
+    <div class="saved" id="saved"></div>
+    <p class="hint" data-t="privacy"></p>
+  </div>
+
+  <div class="paperbox"><div id="paper"></div></div>
+</div>
+
+<script>// Pure functions: Thai baht text, PromptPay payload, totals.
+(function (root) {
+  const D = ['ศูนย์', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+  const P = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน'];
+
+  function readInt(s) {
+    // s: digit string without leading zeros issues; handles millions recursively
+    if (s.length > 6) {
+      const head = s.slice(0, s.length - 6);
+      const tail = s.slice(-6);
+      return readInt(head) + 'ล้าน' + (/^0+$/.test(tail) ? '' : readInt(tail));
+    }
+    let out = '';
+    const n = s.length;
+    for (let i = 0; i < n; i++) {
+      const d = +s[i];
+      const pos = n - i - 1;
+      if (d === 0) continue;
+      if (pos === 0 && d === 1 && n > 1) out += 'เอ็ด';
+      else if (pos === 1 && d === 2) out += 'ยี่สิบ';
+      else if (pos === 1 && d === 1) out += 'สิบ';
+      else out += D[d] + P[pos];
+    }
+    return out;
+  }
+
+  function bahtText(amount) {
+    const v = Math.round((+amount + Number.EPSILON) * 100);
+    if (!isFinite(v) || v < 0) return '';
+    if (v === 0) return 'ศูนย์บาทถ้วน';
+    const baht = Math.floor(v / 100);
+    const sat = v % 100;
+    let out = '';
+    if (baht > 0) out += readInt(String(baht)) + 'บาท';
+    out += sat === 0 ? 'ถ้วน' : readInt(String(sat)) + 'สตางค์';
+    return out;
+  }
+
+  const ONES = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
+    'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+  function en999(n) {
+    let s = '';
+    if (n >= 100) { s += ONES[Math.floor(n / 100)] + ' hundred'; n %= 100; if (n) s += ' '; }
+    if (n >= 20) { s += TENS[Math.floor(n / 10)]; if (n % 10) s += '-' + ONES[n % 10]; }
+    else if (n) s += ONES[n];
+    return s;
+  }
+
+  function enInt(n) {
+    const scales = ['', 'thousand', 'million', 'billion'];
+    const parts = [];
+    for (let i = 0; n > 0; i++, n = Math.floor(n / 1000)) {
+      const c = n % 1000;
+      if (c) parts.unshift(en999(c) + (scales[i] ? ' ' + scales[i] : ''));
+    }
+    return parts.join(' ');
+  }
+
+  function bahtTextEn(amount) {
+    const v = Math.round((+amount + Number.EPSILON) * 100);
+    if (!isFinite(v) || v < 0) return '';
+    if (v === 0) return 'Zero baht only';
+    const baht = Math.floor(v / 100);
+    const sat = v % 100;
+    let out = baht > 0 ? enInt(baht) + ' baht' : '';
+    out += sat ? (baht ? ' and ' : '') + enInt(sat) + ' satang' : ' only';
+    return out[0].toUpperCase() + out.slice(1);
+  }
+
+  function crc16(str) {
+    let crc = 0xffff;
+    for (let i = 0; i < str.length; i++) {
+      crc ^= str.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+    }
+    return crc.toString(16).toUpperCase().padStart(4, '0');
+  }
+
+  function tlv(id, val) {
+    return id + String(val.length).padStart(2, '0') + val;
+  }
+
+  function promptPayPayload(target, amount) {
+    const t = String(target || '').replace(/\D/g, '');
+    if (!t) return '';
+    let sub, key;
+    if (t.length >= 13) { sub = '02'; key = t.slice(0, 13); }
+    else if (t.length === 15) { sub = '03'; key = t; }
+    else { sub = '01'; key = '0066' + t.replace(/^0/, ''); }
+    const amt = +amount > 0 ? (+amount).toFixed(2) : '';
+    let p = tlv('00', '01') + tlv('01', amt ? '12' : '11') +
+      tlv('29', tlv('00', 'A000000677010111') + tlv(sub, key)) +
+      tlv('53', '764') + (amt ? tlv('54', amt) : '') + tlv('58', 'TH');
+    p += '6304';
+    return p + crc16(p);
+  }
+
+  function round2(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
+
+  function totals(items, o) {
+    const sub = round2(items.reduce((s, i) => s + (+i.qty || 0) * (+i.price || 0), 0));
+    const disc = round2(Math.min(+o.discount || 0, sub));
+    const base = round2(sub - disc);
+    let vat = 0, net = base;
+    if (o.vatMode === 'exclude') { vat = round2(base * 0.07); }
+    else if (o.vatMode === 'include') { net = round2(base / 1.07); vat = round2(base - net); }
+    const baseExVat = o.vatMode === 'include' ? net : base;
+    const wht = round2(baseExVat * ((+o.whtRate || 0) / 100));
+    const grand = o.vatMode === 'include' ? base : round2(base + vat);
+    const pay = round2(grand - wht);
+    return { sub, disc, base, vat, wht, grand, pay };
+  }
+
+  const api = { bahtText, bahtTextEn, promptPayPayload, crc16, totals };
+  if (typeof module !== 'undefined') module.exports = api;
+  else root.ThaiDoc = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+const LITE = true;
+const FULL_URL = 'https://tanisorn7.gumroad.com/l/thaidoc';
+const $ = id => document.getElementById(id);
+const fmt = n => (+n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SELLER = ['sName','sAddr','sTax','sTel','pp'];
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+// Form labels: [Thai, English]
+const UI = {
+  appTitle: ['ทำเอกสารไทย', 'ThaiDoc – Thai invoice maker'],
+  lang: ['ภาษาเอกสาร / Language', 'Document language / ภาษา'],
+  type: ['ประเภทเอกสาร', 'Document type'],
+  no: ['เลขที่', 'Number'], date: ['วันที่', 'Date'],
+  seller: ['ผู้ขาย (บันทึกไว้ในเครื่องอัตโนมัติ)', 'Seller (saved on this device)'],
+  sName: ['ชื่อกิจการ / ชื่อ-สกุล', 'Business or your name'],
+  addr: ['ที่อยู่', 'Address'], taxid: ['เลขผู้เสียภาษี', 'Tax ID'], tel: ['โทร', 'Phone'],
+  pp: ['PromptPay (เบอร์โทร หรือ เลขบัตร 13 หลัก)', 'PromptPay (phone or 13-digit ID)'],
+  customer: ['ลูกค้า', 'Customer'], bName: ['ชื่อลูกค้า', 'Customer name'],
+  items: ['รายการ', 'Items'], addItem: ['+ เพิ่มรายการ', '+ Add item'], desc: ['รายละเอียด', 'Description'],
+  taxes: ['ภาษีและส่วนลด', 'Tax & discount'],
+  vatNone: ['ไม่มี VAT', 'No VAT'], vatEx: ['แยก VAT', 'Add VAT on top'], vatIn: ['ราคารวม VAT แล้ว', 'Prices include VAT'],
+  whtLabel: ['หัก ณ ที่จ่าย', 'Withholding tax'], whtNone: ['ไม่หัก', 'None'],
+  discount: ['ส่วนลด (บาท)', 'Discount (THB)'], noteLabel: ['หมายเหตุ / เงื่อนไข', 'Notes / terms'],
+  print: ['พิมพ์ / บันทึกเป็น PDF', 'Print / Save as PDF'], save: ['บันทึกเอกสาร', 'Save document'],
+  newDoc: ['เอกสารใหม่', 'New document'], savedDocs: ['เอกสารที่บันทึก:', 'Saved documents:'],
+  privacy: ['ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์ของคุณเท่านั้น ไม่ถูกส่งไปที่ใด', 'All data stays in your browser. Nothing is uploaded.'],
+  appTitleLite: ['ทำเอกสารไทย Lite (ฟรี)', 'ThaiDoc Lite (free)'],
+  liteBanner: ['เวอร์ชันฟรี: อัปเกรดเพื่อปลดล็อกใบกำกับภาษี ใบเสร็จ หัก ณ ที่จ่าย QR PromptPay บันทึกเอกสาร และเอาลายน้ำออก',
+    'Free version: upgrade to unlock tax invoices, receipts, withholding tax, PromptPay QR, saved documents and no watermark.'],
+  upgrade: ['อัปเกรดรุ่นเต็ม 299 บาท', 'Get the full version (299 THB)'],
+  watermark: ['สร้างด้วย ThaiDoc Lite (ฟรี)', 'Made with ThaiDoc Lite (free)']
+};
+// Document labels: [Thai, English]
+const DOC = {
+  QT: ['ใบเสนอราคา', 'Quotation'], INV: ['ใบแจ้งหนี้', 'Invoice'], TAX: ['ใบกำกับภาษี', 'Tax Invoice'], RC: ['ใบเสร็จรับเงิน', 'Receipt'],
+  no: ['เลขที่', 'No.'], date: ['วันที่', 'Date'], customer: ['ลูกค้า', 'Bill to'], taxid: ['เลขผู้เสียภาษี', 'Tax ID'], tel: ['โทร', 'Tel'],
+  item: ['รายการ', 'Description'], qty: ['จำนวน', 'Qty'], unit: ['ราคา/หน่วย', 'Unit price'], amount: ['รวม', 'Amount'],
+  sub: ['รวมเป็นเงิน', 'Subtotal'], disc: ['ส่วนลด', 'Discount'], vat: ['ภาษีมูลค่าเพิ่ม 7%', 'VAT 7%'],
+  grand: ['จำนวนเงินรวมทั้งสิ้น', 'Grand total'], wht: ['หัก ณ ที่จ่าย', 'Withholding tax'], pay: ['ยอดชำระสุทธิ', 'Net payable'],
+  note: ['หมายเหตุ', 'Notes'], sign: ['ผู้มีอำนาจลงนาม', 'Authorized signature'],
+  scan: ['สแกนจ่ายผ่าน PromptPay', 'Scan to pay with PromptPay'], baht: ['บาท', 'THB']
+};
+let items = [{desc:'', qty:1, price:0}];
+const lang = () => $('lang').value;
+function L(k, sep = ' ') {
+  const [th, en] = DOC[k];
+  return lang() === 'both' ? `${th}${sep}<small>${en}</small>` : lang() === 'en' ? en : th;
+}
+function applyUI() {
+  const i = lang() === 'en' ? 1 : 0;
+  document.documentElement.lang = i ? 'en' : 'th';
+  document.querySelectorAll('[data-t]').forEach(e => e.textContent = UI[e.dataset.t][i]);
+  [...$('type').options].forEach(o => o.textContent = DOC[o.value][i]);
+  if (LITE) document.querySelector('h1').textContent = UI.appTitleLite[i];
+  renderItems(); renderSaved();
+}
+
+function nextNo(prefix) {
+  const y = new Date().getFullYear() + 543, counters = store.get('counters', {});
+  const n = (counters[prefix + y] || 0) + 1;
+  return `${prefix}${y}-${String(n).padStart(4, '0')}`;
+}
+function bumpCounter(no) {
+  const m = /^([A-Z]+)(\d{4})-(\d+)$/.exec(no); if (!m) return;
+  const c = store.get('counters', {}), k = m[1] + m[2];
+  c[k] = Math.max(c[k] || 0, +m[3]); store.set('counters', c);
+}
+function renderItems() {
+  const ph = UI.desc[lang() === 'en' ? 1 : 0];
+  $('items').innerHTML = items.map((it, i) => `
+    <div class="it">
+      <input data-i="${i}" data-f="desc" placeholder="${ph}" value="${esc(it.desc)}">
+      <input data-i="${i}" data-f="qty" type="number" min="0" step="any" value="${it.qty}">
+      <input data-i="${i}" data-f="price" type="number" min="0" step="0.01" value="${it.price}">
+      <button type="button" data-del="${i}" aria-label="remove">×</button>
+    </div>`).join('');
+}
+function state() {
+  return {prefix: $('type').value, lang: lang(), no: $('no').value, date: $('date').value, items,
+    s: Object.fromEntries(SELLER.map(k => [k, $(k).value])),
+    b: {name: $('bName').value, addr: $('bAddr').value, tax: $('bTax').value},
+    vatMode: $('vatMode').value, whtRate: $('whtRate').value, discount: $('discount').value, note: $('note').value};
+}
+function docDate(v) {
+  if (!v) return '';
+  const d = new Date(v + 'T00:00:00');
+  return d.toLocaleDateString(lang() === 'en' ? 'en-GB' : 'th-TH', {day: 'numeric', month: 'long', year: 'numeric'});
+}
+function words(n) {
+  const th = ThaiDoc.bahtText(n), en = ThaiDoc.bahtTextEn(n);
+  return lang() === 'both' ? `(${th})<br><small>(${en})</small>` : `(${lang() === 'en' ? en : th})`;
+}
+function render() {
+  const s = state(), t = ThaiDoc.totals(s.items, s), lg = lang();
+  const [titleTh, titleEn] = DOC[s.prefix];
+  const title = lg === 'both' ? `${titleTh}<small>${titleEn}</small>` : lg === 'en' ? titleEn : titleTh;
+  const rows = s.items.map((it, i) => `<tr><td>${i+1}</td><td>${esc(it.desc)}</td><td class="r">${+it.qty}</td>
+    <td class="r">${fmt(it.price)}</td><td class="r">${fmt((+it.qty||0)*(+it.price||0))}</td></tr>`).join('');
+  const payAmt = s.whtRate > 0 ? t.pay : t.grand;
+  const payload = LITE ? '' : ThaiDoc.promptPayPayload(s.s.pp, payAmt);
+  const wm = LITE ? `<div class="wm">${UI.watermark[0]} · ${UI.watermark[1]} · ${FULL_URL.replace('https://', '')}</div>` : '';
+  let qr = '';
+  if (payload && window.qrcode) {
+    const q = qrcode(0, 'M'); q.addData(payload); q.make();
+    qr = `<div style="text-align:center"><div style="width:110px">${q.createSvgTag({cellSize: 3, margin: 0, scalable: true})}</div>
+      <div style="font-size:11px">${L('scan', '<br>')}<br><b>${fmt(payAmt)} ${DOC.baht[lg === 'en' ? 1 : 0]}</b></div></div>`;
+  }
+  $('paper').innerHTML = `
+    <div class="top">
+      <div><b style="font-size:16px">${esc(s.s.sName)}</b><pre>${esc(s.s.sAddr)}</pre>
+        ${s.s.sTax ? `${L('taxid')} ${esc(s.s.sTax)}<br>` : ''}${s.s.sTel ? `${L('tel')} ${esc(s.s.sTel)}` : ''}</div>
+      <div style="text-align:right"><div class="title">${title}</div>${L('no')} ${esc(s.no)}<br>${L('date')} ${docDate(s.date)}</div>
+    </div>
+    <div style="margin-top:14px;padding:8px;border:1px solid #ddd;border-radius:6px">
+      <b>${L('customer')}:</b> ${esc(s.b.name)}<pre>${esc(s.b.addr)}</pre>${s.b.tax ? `${L('taxid')} ${esc(s.b.tax)}` : ''}</div>
+    <table><thead><tr><th style="width:36px">#</th><th>${L('item', '<br>')}</th><th class="r" style="width:64px">${L('qty', '<br>')}</th>
+      <th class="r" style="width:100px">${L('unit', '<br>')}</th><th class="r" style="width:110px">${L('amount', '<br>')}</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="sum">
+      <div><span>${L('sub')}</span><span>${fmt(t.sub)}</span></div>
+      ${t.disc ? `<div><span>${L('disc')}</span><span>-${fmt(t.disc)}</span></div>` : ''}
+      ${s.vatMode !== 'none' ? `<div><span>${L('vat')}</span><span>${fmt(t.vat)}</span></div>` : ''}
+      <div class="g"><span>${L('grand')}</span><span>${fmt(t.grand)}</span></div>
+      ${t.wht ? `<div><span>${L('wht')} ${s.whtRate}%</span><span>-${fmt(t.wht)}</span></div>
+      <div class="g"><span>${L('pay')}</span><span>${fmt(t.pay)}</span></div>` : ''}
+    </div>
+    <div class="words">${words(payAmt)}</div>
+    ${s.note ? `<div style="margin-top:12px"><b>${L('note')}</b><pre>${esc(s.note)}</pre></div>` : ''}
+    <div class="foot">${qr}<div class="sign">${L('sign', '<br>')}</div></div>${wm}`;
+}
+function load(d) {
+  if (d.lang) $('lang').value = d.lang;
+  $('type').value = d.prefix || 'QT';
+  $('no').value = d.no; $('date').value = d.date;
+  SELLER.forEach(k => $(k).value = d.s[k] || '');
+  $('bName').value = d.b.name; $('bAddr').value = d.b.addr; $('bTax').value = d.b.tax;
+  $('vatMode').value = d.vatMode; $('whtRate').value = d.whtRate; $('discount').value = d.discount; $('note').value = d.note;
+  items = d.items.length ? d.items : [{desc:'', qty:1, price:0}];
+  applyUI(); render();
+}
+function renderSaved() {
+  const docs = store.get('docs', []);
+  $('saved').innerHTML = docs.length ? `<b>${UI.savedDocs[lang() === 'en' ? 1 : 0]}</b><br>` +
+    docs.map((d, i) => `<a data-open="${i}">${esc(d.no)} ${esc(d.b.name)}</a>`).join('') : '';
+}
+function fresh() {
+  $('no').value = nextNo($('type').value);
+  $('date').value = new Date().toISOString().slice(0, 10);
+  $('bName').value = $('bAddr').value = $('bTax').value = $('note').value = '';
+  $('discount').value = 0; items = [{desc:'', qty:1, price:0}]; renderItems(); render();
+}
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.f) items[t.dataset.i][t.dataset.f] = t.value;
+  store.set('seller', Object.fromEntries(SELLER.map(k => [k, $(k).value])));
+  render();
+});
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.dataset.del !== undefined) { items.splice(t.dataset.del, 1); if (!items.length) items.push({desc:'', qty:1, price:0}); renderItems(); render(); }
+  if (t.dataset.open !== undefined) load(store.get('docs', [])[t.dataset.open]);
+});
+$('lang').addEventListener('change', () => { store.set('lang', lang()); applyUI(); render(); });
+$('type').addEventListener('change', () => { $('no').value = nextNo($('type').value); render(); });
+$('addItem').onclick = () => { items.push({desc:'', qty:1, price:0}); renderItems(); };
+$('print').onclick = () => window.print();
+$('newDoc').onclick = fresh;
+$('save').onclick = () => {
+  const d = state(), docs = store.get('docs', []).filter(x => x.no !== d.no);
+  docs.unshift(d); store.set('docs', docs.slice(0, 200)); bumpCounter(d.no); renderSaved();
+};
+const sv = store.get('seller', {}); SELLER.forEach(k => $(k).value = sv[k] || '');
+$('lang').value = store.get('lang', 'th');
+if (LITE) {
+  document.querySelectorAll('option[data-full]').forEach(o => o.remove());
+  document.querySelectorAll('[data-full]').forEach(e => e.hidden = true);
+  $('pp').value = ''; $('whtRate').value = '0';
+  $('liteBox').hidden = false; $('upgrade').href = FULL_URL;
+  document.title = document.title.replace('ThaiDoc', 'ThaiDoc Lite');
+}
+applyUI(); fresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>คำนวณ VAT 7% และหัก ณ ที่จ่าย ออนไลน์ฟรี (ถอด VAT / บวก VAT) | ThaiDoc</title>
+<meta name="description" content="เครื่องคิด VAT 7% ออนไลน์ ถอด VAT จากราคารวม หรือบวก VAT เพิ่ม พร้อมคำนวณหัก ณ ที่จ่าย 1% 2% 3% 5% และยอดชำระสุทธิ ใช้ฟรี ไม่ต้องสมัคร">
+<link rel="canonical" href="https://thaidoc.github.io/vat-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="คำนวณ VAT 7% และหัก ณ ที่จ่าย ออนไลน์ฟรี (ถอด VAT / บวก VAT) | ThaiDoc">
+<meta property="og:description" content="เครื่องคิด VAT 7% ออนไลน์ ถอด VAT จากราคารวม หรือบวก VAT เพิ่ม พร้อมคำนวณหัก ณ ที่จ่าย 1% 2% 3% 5% และยอดชำระสุทธิ ใช้ฟรี ไม่ต้องสมัคร">
+<meta property="og:url" content="https://thaidoc.github.io/vat-calculator/">
+<meta property="og:image" content="https://thaidoc.github.io/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="logo" href="../">Thai<span>Doc</span></a><nav><a href="../app/">ใช้ฟรีออนไลน์</a><a href="../baht-text/">แปลงบาทเป็นตัวหนังสือ</a><a href="../blog/">บทความ</a><a href="../en/">English</a></nav></div></header>
+<main><div class="wrap">
+<h1>คำนวณ VAT 7% และหัก ณ ที่จ่าย</h1>
+<p class="lead">ใส่จำนวนเงิน เลือกว่าราคานี้รวม VAT แล้วหรือยัง แล้วดูยอด VAT ภาษีหัก ณ ที่จ่าย และยอดที่ต้องโอนจริงได้ทันที</p>
+
+<div class="card">
+  <label for="amt"><b>จำนวนเงิน (บาท)</b></label>
+  <input id="amt" inputmode="decimal" value="10000">
+  <p style="margin:14px 0 6px"><b>ราคานี้…</b></p>
+  <label><input type="radio" name="mode" value="exclude" checked style="width:auto"> ยังไม่รวม VAT (บวก VAT เพิ่ม)</label><br>
+  <label><input type="radio" name="mode" value="include" style="width:auto"> รวม VAT แล้ว (ถอด VAT ออก)</label><br>
+  <label><input type="radio" name="mode" value="none" style="width:auto"> ไม่มี VAT</label>
+  <p style="margin:14px 0 6px"><b>หัก ณ ที่จ่าย</b></p>
+  <select id="wht" style="font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">
+    <option value="0">ไม่หัก</option><option value="1">1% (ค่าขนส่ง)</option><option value="2">2% (ค่าโฆษณา)</option>
+    <option value="3" selected>3% (ค่าบริการ / ค่าจ้าง)</option><option value="5">5% (ค่าเช่า)</option>
+  </select>
+  <div class="tablebox" style="margin-top:16px"><table id="res"></table></div>
+  <div class="out" id="words" style="font-size:17px"></div>
+</div>
+
+<div class="cta">
+  ใส่ตัวเลขชุดนี้ลงใบแจ้งหนี้หรือใบกำกับภาษีให้อัตโนมัติ พร้อม QR PromptPay ที่ฝังยอดสุทธิ
+  <div class="btns"><a class="btn" href="https://tanisorn7.gumroad.com/l/thaidoc">ThaiDoc รุ่นเต็ม</a><a class="btn alt" href="../app/">ลองรุ่นฟรี</a></div>
+</div>
+
+<h2>สูตรที่ใช้</h2>
+<ul>
+  <li><b>บวก VAT:</b> VAT = ราคา × 7% → ยอดรวม = ราคา + VAT</li>
+  <li><b>ถอด VAT:</b> ราคาก่อน VAT = ยอดรวม ÷ 1.07 → VAT = ยอดรวม − ราคาก่อน VAT</li>
+  <li><b>หัก ณ ที่จ่าย:</b> คิดจากราคาก่อน VAT เสมอ เช่น 3% ของ 10,000 = 300</li>
+  <li><b>ยอดชำระสุทธิ:</b> ยอดรวม VAT − ภาษีหัก ณ ที่จ่าย</li>
+</ul>
+<p>อ่านเพิ่ม: <a href="../blog/withholding-tax-3-percent/">หัก ณ ที่จ่าย 3% คิดยังไง สำหรับฟรีแลนซ์</a></p>
+
+<script src="../core.js"></script>
+<script>
+const fmt = n => n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+function upd() {
+  const v = parseFloat(document.getElementById('amt').value.replace(/,/g, '')) || 0;
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  const whtRate = +document.getElementById('wht').value;
+  const t = ThaiDoc.totals([{qty: 1, price: v}], {vatMode: mode, whtRate, discount: 0});
+  const base = mode === 'include' ? t.grand - t.vat : t.base;
+  const rows = [['ราคาก่อน VAT', base], ['VAT 7%', t.vat], ['ยอดรวม', t.grand]];
+  if (whtRate) rows.push([`หัก ณ ที่จ่าย ${whtRate}%`, -t.wht]);
+  rows.push(['ยอดชำระสุทธิ', t.pay]);
+  document.getElementById('res').innerHTML = rows.map(([k, n], i) =>
+    `<tr><td>${i === rows.length - 1 ? '<b>' + k + '</b>' : k}</td><td style="text-align:right">${i === rows.length - 1 ? '<b>' + fmt(n) + '</b>' : fmt(n)}</td></tr>`).join('');
+  document.getElementById('words').textContent = '(' + ThaiDoc.bahtText(t.pay) + ')';
+}
+document.querySelectorAll('input,select').forEach(e => e.addEventListener('input', upd));
+upd();
+</script>
+
+</div></main>
+<footer class="site"><div class="wrap">
+ThaiDoc – เครื่องมือทำใบเสนอราคา ใบแจ้งหนี้ ใบกำกับภาษี ใบเสร็จ สำหรับฟรีแลนซ์และธุรกิจในไทย ·
+<a href="https://tanisorn7.gumroad.com/l/thaidoc">รุ่นเต็ม</a> · <a href="../app/">รุ่นฟรีออนไลน์</a><br>
+เนื้อหาในเว็บนี้เป็นข้อมูลทั่วไป ไม่ใช่คำปรึกษาด้านภาษีหรือกฎหมาย โปรดตรวจสอบกับกรมสรรพากรหรือผู้เชี่ยวชาญสำหรับกรณีของคุณ
+</div></footer>
+</body>
+</html>

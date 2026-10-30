@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แปลงตัวเลขเป็นตัวหนังสือภาษาไทย (บาทถ้วน) ออนไลน์ฟรี | ThaiDoc</title>
+<meta name="description" content="แปลงจำนวนเงินเป็นตัวหนังสือภาษาไทย เช่น 1,250.50 เป็น หนึ่งพันสองร้อยห้าสิบบาทห้าสิบสตางค์ และเป็นภาษาอังกฤษ ใช้เขียนใบเสร็จ ใบแจ้งหนี้ เช็ค ฟรี ไม่ต้องสมัคร">
+<link rel="canonical" href="https://thaidoc.github.io/baht-text/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="แปลงตัวเลขเป็นตัวหนังสือภาษาไทย (บาทถ้วน) ออนไลน์ฟรี | ThaiDoc">
+<meta property="og:description" content="แปลงจำนวนเงินเป็นตัวหนังสือภาษาไทย เช่น 1,250.50 เป็น หนึ่งพันสองร้อยห้าสิบบาทห้าสิบสตางค์ และเป็นภาษาอังกฤษ ใช้เขียนใบเสร็จ ใบแจ้งหนี้ เช็ค ฟรี ไม่ต้องสมัคร">
+<meta property="og:url" content="https://thaidoc.github.io/baht-text/">
+<meta property="og:image" content="https://thaidoc.github.io/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="logo" href="../">Thai<span>Doc</span></a><nav><a href="../app/">ใช้ฟรีออนไลน์</a><a href="../baht-text/">แปลงบาทเป็นตัวหนังสือ</a><a href="../blog/">บทความ</a><a href="../en/">English</a></nav></div></header>
+<main><div class="wrap">
+<h1>แปลงตัวเลขเป็นตัวหนังสือบาทไทย</h1>
+<p class="lead">พิมพ์จำนวนเงิน แล้วได้ตัวหนังสือภาษาไทยและภาษาอังกฤษทันที ใช้กับใบเสร็จ ใบแจ้งหนี้ ใบกำกับภาษี หรือเช็คได้</p>
+
+<div class="card">
+  <label for="amt"><b>จำนวนเงิน (บาท)</b></label>
+  <input id="amt" inputmode="decimal" placeholder="เช่น 17160 หรือ 1,250.50" value="17160">
+  <p style="margin:14px 0 4px"><b>ภาษาไทย</b></p>
+  <div class="out" id="th"></div>
+  <p style="margin:14px 0 4px"><b>English</b></p>
+  <div class="out" id="en"></div>
+  <div class="btns"><button class="btn" id="copy" type="button" style="border:0;cursor:pointer">คัดลอกภาษาไทย</button></div>
+</div>
+
+<div class="cta">
+  อยากให้ตัวหนังสือบาทไทยขึ้นในใบเสร็จให้อัตโนมัติ พร้อม VAT และหัก ณ ที่จ่าย?
+  <div class="btns"><a class="btn" href="../app/">ลองทำใบแจ้งหนี้ฟรี</a><a class="btn alt" href="https://tanisorn7.gumroad.com/l/thaidoc">รุ่นเต็ม</a></div>
+</div>
+
+<h2>หลักการเขียนจำนวนเงินเป็นตัวหนังสือภาษาไทย</h2>
+<ul>
+  <li>ถ้าไม่มีเศษสตางค์ ให้ลงท้ายด้วย <b>"ถ้วน"</b> เช่น 500 บาท เขียนว่า "ห้าร้อยบาทถ้วน"</li>
+  <li>ถ้ามีสตางค์ ให้เขียนต่อท้ายด้วย "สตางค์" และไม่ต้องมีคำว่าถ้วน เช่น 25.50 เขียนว่า "ยี่สิบห้าบาทห้าสิบสตางค์"</li>
+  <li>เลข 1 ในหลักหน่วยที่มีหลักอื่นนำหน้า อ่านว่า <b>"เอ็ด"</b> เช่น 21 = ยี่สิบเอ็ด, 101 = หนึ่งร้อยเอ็ด</li>
+  <li>เลข 2 ในหลักสิบ อ่านว่า <b>"ยี่"</b> เช่น 20 = ยี่สิบ</li>
+  <li>เลข 1 ในหลักสิบ อ่านแค่ "สิบ" เช่น 10 = สิบ, 15 = สิบห้า</li>
+  <li>ตัวเลขเกินล้าน ให้อ่านส่วนหน้าแล้วตามด้วย "ล้าน" เช่น 1,000,001 = หนึ่งล้านเอ็ดบาทถ้วน</li>
+</ul>
+
+<h2>ตัวอย่าง</h2>
+<div class="tablebox"><table>
+<tr><th>ตัวเลข</th><th>ตัวหนังสือ</th></tr>
+<tr><td>11</td><td>สิบเอ็ดบาทถ้วน</td></tr>
+<tr><td>250.75</td><td>สองร้อยห้าสิบบาทเจ็ดสิบห้าสตางค์</td></tr>
+<tr><td>3,210</td><td>สามพันสองร้อยสิบบาทถ้วน</td></tr>
+<tr><td>17,160</td><td>หนึ่งหมื่นเจ็ดพันหนึ่งร้อยหกสิบบาทถ้วน</td></tr>
+<tr><td>2,500,000</td><td>สองล้านห้าแสนบาทถ้วน</td></tr>
+</table></div>
+
+<script src="../core.js"></script>
+<script>
+const amt = document.getElementById('amt');
+function upd() {
+  const v = parseFloat(amt.value.replace(/,/g, ''));
+  const ok = isFinite(v) && v >= 0;
+  document.getElementById('th').textContent = ok ? ThaiDoc.bahtText(v) : '-';
+  document.getElementById('en').textContent = ok ? ThaiDoc.bahtTextEn(v) : '-';
+}
+amt.addEventListener('input', upd); upd();
+document.getElementById('copy').onclick = () => {
+  try { navigator.clipboard.writeText(document.getElementById('th').textContent); } catch (e) {}
+};
+</script>
+
+</div></main>
+<footer class="site"><div class="wrap">
+ThaiDoc – เครื่องมือทำใบเสนอราคา ใบแจ้งหนี้ ใบกำกับภาษี ใบเสร็จ สำหรับฟรีแลนซ์และธุรกิจในไทย ·
+<a href="https://tanisorn7.gumroad.com/l/thaidoc">รุ่นเต็ม</a> · <a href="../app/">รุ่นฟรีออนไลน์</a><br>
+เนื้อหาในเว็บนี้เป็นข้อมูลทั่วไป ไม่ใช่คำปรึกษาด้านภาษีหรือกฎหมาย โปรดตรวจสอบกับกรมสรรพากรหรือผู้เชี่ยวชาญสำหรับกรณีของคุณ
+</div></footer>
+</body>
+</html>
