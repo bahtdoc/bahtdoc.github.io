@@ -124,5 +124,5 @@
 
   const api = { bahtText, bahtTextEn, promptPayPayload, crc16, totals };
   if (typeof module !== 'undefined') module.exports = api;
-  else root.ThaiDoc = api;
+  else root.BahtDoc = api;
 })(typeof window !== 'undefined' ? window : globalThis);

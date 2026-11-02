@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "ThaiDoc – ทำใบเสนอราคา ใบแจ้งหนี้",
-  "short_name": "ThaiDoc",
+  "name": "BahtDoc – ทำใบเสนอราคา ใบแจ้งหนี้",
+  "short_name": "BahtDoc",
   "description": "ทำใบเสนอราคาและใบแจ้งหนี้ภาษาไทย คิด VAT 7% ตัวหนังสือบาทไทย ใช้ได้แม้ไม่มีเน็ต",
   "lang": "th",
   "start_url": "./?source=pwa",

@@ -1,6 +1,6 @@
 // Offline shell for the free online app (/app/). build-site.js swaps the version token in the cache
 // name below for a hash of the app, so every deploy that changes the app starts a fresh cache.
-const CACHE = 'thaidoc-app-5eb73b61';
+const CACHE = 'bahtdoc-app-0795559f';
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 const HOME = new Request(new URL('./', self.location).href);
 
@@ -11,7 +11,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith('thaidoc-app-') && k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith('bahtdoc-app-') && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

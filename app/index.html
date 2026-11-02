@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ThaiDoc - ใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ / Thai Invoice Maker</title>
+<title>BahtDoc - ใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ / Thai Invoice Maker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -63,7 +63,7 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ThaiDoc">
+<meta name="apple-mobile-web-app-title" content="BahtDoc">
 </head>
 <body>
 <div class="wrap">
@@ -251,12 +251,12 @@ button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(-
 
   const api = { bahtText, bahtTextEn, promptPayPayload, crc16, totals };
   if (typeof module !== 'undefined') module.exports = api;
-  else root.ThaiDoc = api;
+  else root.BahtDoc = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 <script>
 const LITE = true;
-const FULL_URL = 'https://thaidoc.gumroad.com/l/thaidoc';
+const FULL_URL = 'https://bahtdoc.gumroad.com/l/bahtdoc';
 const $ = id => document.getElementById(id);
 const fmt = n => (+n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -267,7 +267,7 @@ const store = {
 };
 // Form labels: [Thai, English]
 const UI = {
-  appTitle: ['ทำเอกสารไทย', 'ThaiDoc – Thai invoice maker'],
+  appTitle: ['ทำเอกสารไทย', 'BahtDoc – Thai invoice maker'],
   lang: ['ภาษาเอกสาร / Language', 'Document language / ภาษา'],
   type: ['ประเภทเอกสาร', 'Document type'],
   no: ['เลขที่', 'Number'], date: ['วันที่', 'Date'],
@@ -284,11 +284,11 @@ const UI = {
   print: ['พิมพ์ / บันทึกเป็น PDF', 'Print / Save as PDF'], save: ['บันทึกเอกสาร', 'Save document'],
   newDoc: ['เอกสารใหม่', 'New document'], savedDocs: ['เอกสารที่บันทึก:', 'Saved documents:'],
   privacy: ['ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์ของคุณเท่านั้น ไม่ถูกส่งไปที่ใด', 'All data stays in your browser. Nothing is uploaded.'],
-  appTitleLite: ['ทำเอกสารไทย Lite (ฟรี)', 'ThaiDoc Lite (free)'],
+  appTitleLite: ['ทำเอกสารไทย Lite (ฟรี)', 'BahtDoc Lite (free)'],
   liteBanner: ['เวอร์ชันฟรี: อัปเกรดเพื่อปลดล็อกใบกำกับภาษี ใบเสร็จ หัก ณ ที่จ่าย QR PromptPay บันทึกเอกสาร และเอาลายน้ำออก',
     'Free version: upgrade to unlock tax invoices, receipts, withholding tax, PromptPay QR, saved documents and no watermark.'],
   upgrade: ['อัปเกรดรุ่นเต็ม 299 บาท', 'Get the full version (299 THB)'],
-  watermark: ['สร้างด้วย ThaiDoc Lite (ฟรี)', 'Made with ThaiDoc Lite (free)']
+  watermark: ['สร้างด้วย BahtDoc Lite (ฟรี)', 'Made with BahtDoc Lite (free)']
 };
 // Document labels: [Thai, English]
 const DOC = {
@@ -347,17 +347,17 @@ function docDate(v) {
   return d.toLocaleDateString(lang() === 'en' ? 'en-GB' : 'th-TH', {day: 'numeric', month: 'long', year: 'numeric'});
 }
 function words(n) {
-  const th = ThaiDoc.bahtText(n), en = ThaiDoc.bahtTextEn(n);
+  const th = BahtDoc.bahtText(n), en = BahtDoc.bahtTextEn(n);
   return lang() === 'both' ? `(${th})<br><small>(${en})</small>` : `(${lang() === 'en' ? en : th})`;
 }
 function render() {
-  const s = state(), t = ThaiDoc.totals(s.items, s), lg = lang();
+  const s = state(), t = BahtDoc.totals(s.items, s), lg = lang();
   const [titleTh, titleEn] = DOC[s.prefix];
   const title = lg === 'both' ? `${titleTh}<small>${titleEn}</small>` : lg === 'en' ? titleEn : titleTh;
   const rows = s.items.map((it, i) => `<tr><td>${i+1}</td><td>${esc(it.desc)}</td><td class="r">${+it.qty}</td>
     <td class="r">${fmt(it.price)}</td><td class="r">${fmt((+it.qty||0)*(+it.price||0))}</td></tr>`).join('');
   const payAmt = s.whtRate > 0 ? t.pay : t.grand;
-  const payload = LITE ? '' : ThaiDoc.promptPayPayload(s.s.pp, payAmt);
+  const payload = LITE ? '' : BahtDoc.promptPayPayload(s.s.pp, payAmt);
   const wm = LITE ? `<div class="wm">${UI.watermark[0]} · ${UI.watermark[1]} · ${FULL_URL.replace('https://', '')}</div>` : '';
   let qr = '';
   if (payload && window.qrcode) {
@@ -435,7 +435,7 @@ if (LITE) {
   document.querySelectorAll('[data-full]').forEach(e => e.hidden = true);
   $('pp').value = ''; $('whtRate').value = '0';
   $('liteBox').hidden = false; $('upgrade').href = FULL_URL;
-  document.title = document.title.replace('ThaiDoc', 'ThaiDoc Lite');
+  document.title = document.title.replace('BahtDoc', 'BahtDoc Lite');
 }
 applyUI(); fresh();
 </script>
