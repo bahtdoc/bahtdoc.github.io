@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>คิด VAT 7% ยังไง สูตรบวก VAT และถอด VAT พร้อมตัวอย่าง | BahtDoc</title>
+<meta name="description" content="สูตรคิดภาษีมูลค่าเพิ่ม 7% แบบบวก VAT เข้าไปในราคา และแบบถอด VAT ออกจากราคารวม พร้อมตัวอย่างตัวเลขและข้อควรระวังเรื่องการปัดเศษ ใช้กับใบเสนอราคาและใบแจ้งหนี้">
+<link rel="canonical" href="https://bahtdoc.github.io/blog/vat-7-percent-formula/">
+<link rel="icon" type="image/png" href="../../icon-192.png">
+<link rel="apple-touch-icon" href="../../icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="คิด VAT 7% ยังไง สูตรบวก VAT และถอด VAT พร้อมตัวอย่าง | BahtDoc">
+<meta property="og:description" content="สูตรคิดภาษีมูลค่าเพิ่ม 7% แบบบวก VAT เข้าไปในราคา และแบบถอด VAT ออกจากราคารวม พร้อมตัวอย่างตัวเลขและข้อควรระวังเรื่องการปัดเศษ ใช้กับใบเสนอราคาและใบแจ้งหนี้">
+<meta property="og:url" content="https://bahtdoc.github.io/blog/vat-7-percent-formula/">
+<meta property="og:image" content="https://bahtdoc.github.io/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="logo" href="../../">Baht<span>Doc</span></a><nav><a href="../../app/">ใช้ฟรีออนไลน์</a><a href="../../templates/">เทมเพลต Excel</a><a href="../../baht-text/">แปลงบาทเป็นตัวหนังสือ</a><a href="../../blog/">บทความ</a><a href="../../en/">English</a></nav></div></header>
+<main><div class="wrap">
+<h1>คิด VAT 7% ยังไง สูตรบวก VAT และถอด VAT</h1>
+<p class="lead">VAT 7% คิดได้สองแบบ คือ "ราคายังไม่รวม VAT" ที่ต้องบวกเพิ่ม และ "ราคารวม VAT แล้ว" ที่ต้องถอดออก สูตรสั้นมาก แต่คนสับสนบ่อยเพราะใช้ 7% ตรงๆ กับราคารวมไม่ได้</p>
+
+<h2>แบบที่ 1: บวก VAT เพิ่ม (ราคายังไม่รวม VAT)</h2>
+<div class="tablebox"><table>
+<tr><td>VAT</td><td>ราคาก่อน VAT × 0.07</td></tr>
+<tr><td>ราคารวม VAT</td><td>ราคาก่อน VAT × 1.07</td></tr>
+</table></div>
+<h3>ตัวอย่าง: ค่าบริการ 10,000 บาท</h3>
+<div class="tablebox"><table>
+<tr><td>ราคาก่อน VAT</td><td>10,000.00</td></tr>
+<tr><td>VAT 7%</td><td>700.00</td></tr>
+<tr><th>รวมทั้งสิ้น</th><th>10,700.00</th></tr>
+</table></div>
+
+<h2>แบบที่ 2: ถอด VAT ออก (ราคารวม VAT แล้ว)</h2>
+<div class="tablebox"><table>
+<tr><td>ราคาก่อน VAT</td><td>ราคารวม ÷ 1.07</td></tr>
+<tr><td>VAT</td><td>ราคารวม × 7 ÷ 107 (หรือ ราคารวม − ราคาก่อน VAT)</td></tr>
+</table></div>
+<p>ผิดบ่อยที่สุดคือเอา 7% ไปคูณกับราคารวมโดยตรง เช่น 10,700 × 0.07 = 749 ซึ่งผิด เพราะ 7% ต้องคิดจากราคาก่อน VAT</p>
+<h3>ตัวอย่าง: ราคารวม VAT 10,700 บาท</h3>
+<div class="tablebox"><table>
+<tr><td>ราคาก่อน VAT = 10,700 ÷ 1.07</td><td>10,000.00</td></tr>
+<tr><td>VAT = 10,700 − 10,000</td><td>700.00</td></tr>
+</table></div>
+<h3>ตัวอย่างที่เศษไม่ลงตัว: ราคารวม VAT 5,000 บาท</h3>
+<div class="tablebox"><table>
+<tr><td>ราคาก่อน VAT = 5,000 ÷ 1.07</td><td>4,672.90</td></tr>
+<tr><td>VAT = 5,000 − 4,672.90</td><td>327.10</td></tr>
+<tr><th>รวม</th><th>5,000.00</th></tr>
+</table></div>
+<p>ปัดเป็นทศนิยม 2 ตำแหน่ง (สตางค์) แล้วให้ยอดก่อน VAT บวก VAT เท่ากับราคารวมพอดี</p>
+
+<h2>ตารางลัด</h2>
+<div class="tablebox"><table>
+<tr><th>ราคาก่อน VAT</th><th>VAT 7%</th><th>รวม</th></tr>
+<tr><td>100</td><td>7.00</td><td>107.00</td></tr>
+<tr><td>1,000</td><td>70.00</td><td>1,070.00</td></tr>
+<tr><td>5,000</td><td>350.00</td><td>5,350.00</td></tr>
+<tr><td>10,000</td><td>700.00</td><td>10,700.00</td></tr>
+<tr><td>50,000</td><td>3,500.00</td><td>53,500.00</td></tr>
+</table></div>
+
+<div class="cta">
+  <b>ไม่ต้องคิดเอง</b> ใส่ราคาแล้วเลือก "บวก VAT" หรือ "ถอด VAT" ได้ผลทันที
+  <div class="btns"><a class="btn" href="../../vat-calculator/">เครื่องคำนวณ VAT 7%</a><a class="btn alt" href="../../app/">ทำใบแจ้งหนี้ออนไลน์ฟรี</a></div>
+</div>
+
+<h2>เมื่อมีทั้ง VAT และหัก ณ ที่จ่าย</h2>
+<p>ภาษีหัก ณ ที่จ่ายคิดจากยอด <b>ก่อน VAT</b> เสมอ ไม่ใช่ยอดรวม เช่น ค่าบริการ 10,000 บาท VAT 700 บาท หัก 3% ของ 10,000 = 300 บาท ยอดที่ลูกค้าโอนคือ 10,400 บาท อ่านต่อที่ <a href="../../blog/withholding-tax-3-percent/">หัก ณ ที่จ่าย 3% คิดยังไง</a></p>
+
+<h2>เขียนในใบเสนอราคาให้ชัด</h2>
+<ul>
+  <li>ระบุให้ชัดว่า "ราคายังไม่รวม VAT 7%" หรือ "ราคารวม VAT 7% แล้ว" ลูกค้าจะได้ไม่เข้าใจผิดเรื่องยอดที่ต้องจ่าย</li>
+  <li>แสดงบรรทัดราคาก่อน VAT, VAT 7% และยอดรวมแยกกัน</li>
+  <li>ถ้าคุณ <b>ไม่ได้จดทะเบียน VAT</b> ห้ามบวก VAT ในใบเสนอราคาหรือใบแจ้งหนี้ ดู <a href="../../blog/vat-registration-1-8-million/">ฟรีแลนซ์ต้องจด VAT เมื่อไร</a></li>
+</ul>
+
+<p class="note">บทความนี้เป็นข้อมูลทั่วไป ไม่ใช่คำปรึกษาด้านภาษี การปัดเศษในใบกำกับภาษีจริงควรเป็นไปตามระเบียบของกรมสรรพากรหรือที่นักบัญชีของคุณกำหนด</p>
+
+</div></main>
+<footer class="site"><div class="wrap">
+BahtDoc – เครื่องมือทำใบเสนอราคา ใบแจ้งหนี้ ใบกำกับภาษี ใบเสร็จ สำหรับฟรีแลนซ์และธุรกิจในไทย ·
+<a href="https://bahtdoc.gumroad.com/l/bahtdoc">รุ่นเต็ม</a> · <a href="../../app/">รุ่นฟรีออนไลน์</a><br>
+เนื้อหาในเว็บนี้เป็นข้อมูลทั่วไป ไม่ใช่คำปรึกษาด้านภาษีหรือกฎหมาย โปรดตรวจสอบกับกรมสรรพากรหรือผู้เชี่ยวชาญสำหรับกรณีของคุณ
+</div></footer>
+</body>
+</html>
